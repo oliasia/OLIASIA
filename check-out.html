@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+        Oliasia Check-out
+{% endblock title %}
+{% block taskbar %}
+    <div class='row-md-12 py-2 px-2' style="background: linear-gradient(to top, rgb(191, 224, 193), white, white);">
+        <a class='text-primary' href="{% url 'home' %}">Home </a>
+        <span>></span>
+        <a class='text-primary' href="{% url 'cart' cart_owner.id %}">Cart </a>
+        <span>> Check out</span>
+    </div>
+{% endblock taskbar %}
+
+{% block content %}
+    <section class='container-fluid'>
+            <h2 class='p-2 text-center'>Place Order</h2>
+            <hr>
+            <div class='row checkout-data d-flex justify-content-between'>
+                <div class="col-md-6 pe-2">
+                    <h5 class="bg-info p-2 rounded">Shipping address</h5>
+                    <div class="row-sm-12 d-flex justify-content-between border">
+                        <div class="col-sm-1 p-2 text-center">
+                            <input type="checkbox" id="address-1" name="address-1" value="1" checked>
+                        </div>
+                        <div class="col p-2">
+                            <h5 class="">{{cart_owner.first_name}} {{cart_owner.last_name}}</h5>
+                            {% if profile %}
+                                <h6 class="">{{profile.address}}</h6>
+                                <h6 class="">{{profile.city}}, {{profile.district}}</h6>
+                                <h6 class="">{{profile.state_name}} - {{profile.pincode}} ({{profile.country|upper}})</h6>
+                                <h6 class="">Phone: {{profile.phone}}</h6>
+                            {% endif %}
+                            <h6 class="">E-mail: {{cart_owner.email}}</h6>
+                            {% if profile.gst_no %}
+                                <h5 class="pt-3">GSTIN :- {{profile.gst_no}}</h5>  
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-2 text-center">
+                            <a href="{% url 'profileview' cart_owner.id %}" type="button" class="btn btn-sm px-3"><i class="fa fa-edit" style="font-size:18px;"></i></a>
+                        </div>
+                    </div>
+                    <br>
+                    <h5 class="bg-info p-2 rounded">Billing address</h5>
+                    <div class="row-md-12 d-flex justify-content-between border mb-3">
+                        <div class="col-sm-1 p-2 text-center">
+                            <input type="checkbox" id="address-2" name="address-2" value="1" checked>
+                        </div>
+                        {% if not bill_ship_same %}
+                            <div class="col p-2">
+                                <span>-- Same as shipping address --</span>
+                            </div>
+                        {% else %}
+                            <div class="col-sm-9 p-2">
+                                <h5 class="">{{cart_owner.first_name}} {{cart_owner.last_name}}</h5>
+                                {% if profile %}
+                                    <h6 class="">{{profile.address}}</h6>
+                                    <h6 class="">{{profile.city}}, {{profile.district}}</h6>
+                                    <h6 class="">{{profile.state_name}} - {{profile.pincode}} ({{profile.country|upper}})</h6>
+                                    <h6 class="">Phone: {{profile.phone}}</h6>
+                                {% endif %}
+                                <h6 class="">E-mail: {{cart_owner.email}}</h6>
+                                {% if profile.gst_no %}
+                                    <h5 class="pt-3">GSTIN :- {{profile.gst_no}}</h5>  
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-2 t  ext-center">
+                                <a href="{% url 'profileview' cart_owner.id %}" type="button" class="btn btn-sm px-3"><i class="fa fa-edit" style="font-size:18px;"></i></a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class='row-md-12 mb-3'>
+                        <div class="col">
+                            <h5 class="bg-info p-2 rounded">Order note</h5>
+                            <textarea id="message" name='message' class='form-control mt-2 text-primary border border-info' placeholder="Message">{{profile.message}}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-center bg-info py-2 rounded">Order summary</h5>
+                    {% if cart %}
+                        <table class='table table-stripeds table-bordereds'>
+                            <thead>
+                                <tr class="border">
+                                    <th class="px-1 py-1 border text-center">Image</th>
+                                    <th class="px-1 py-1 border">Product Description</th>
+                                    <th class="px-1 py-1 border text-end">Price (₹)</th>
+                                    <th class="px-1 py-1 border text-end">Qty</th>
+                                    <th class="px-1 py-1 border text-start">UOM</th>
+                                    <th class="ps-1 pe-2 py-1 border text-end">Amount(₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                    <tr class="border">
+                                        <td class='px-1 py-1 border text-center'>
+                                            <a href="{% url 'product' item.product.slug %}">
+                                                {% if item.product.image %}
+                                                    <img src="{{item.product.image.url|default_if_none:'#' }}" alt="Product Image" width="60px;" class="p-2">
+                                                {% else  %}
+                                                    <img src="{% static 'images/Logo.png' %}" alt="Product Image" width="75px;">
+                                                {% endif %}
+                                            </a>
+                                        </td>
+                                        <td class='px-1 py-1 border'>
+                                            <a href="{% url 'product' item.product.slug %}">{{item.product.name}}</a>
+                                        </td>
+                                        <td class='px-1 py-1 border text-end'>{{item.product.net_price|floatformat:2|intcomma}}</td>
+                                        <td class='px-1 py-1 border text-center'>{{item.quantity}}</td>
+                                        <td class='px-1 py-1 border text-start'>{{item.product.uom}}</td>                                        
+                                        <td class="ps-1 pe-2 py-1 border text-end">{{item.items_amount|floatformat:2|intcomma}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <table class='table table-stripeds table-bordereds'>
+                            <tbody class="border shadow">
+                                <tr>
+                                    <td>Shipping charge
+                                        {% if order_value > 1000 %}
+                                            <span class="text-success">(discount applied)</span>
+                                        {% endif %}
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    {% if shipping_charge %}
+                                        <td class="pe-2 text-end">+ {{shipping_charge|floatformat:2|intcomma}}</td>
+                                    {% else %}
+                                        <td class="text-end">Free</td>
+                                    {% endif %}
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <h3>Order Value</h3>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <h3 class='float-end'>₹  {{order_value|floatformat:2|intcomma}}</h3>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row-md-12 mb-3 d-flex justify-content-between">
+                            <div class="col">
+                                <table class="mt-2">
+                                    <tbody>
+                                        <tr>
+                                            <td class="px-2 text-start">
+                                                <span>Delivery within </span>
+                                                <span class="fw-bold"> {{transporter.delivery_time}} </span> 
+                                                <span> working days.</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-2 text-start">
+                                                <a href="{% url 'contactus' %}" class="text-primary" style="text-decoration:underline;">Contact us</a> for bulk order & quotation.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="p-2 mt-3">
+                                    <a href="javascript: history.go(-1)" class='btn btn-warning text-black'><i class='fa fa-reply'></i> Back</a>
+                                </div>
+                            </div>
+                            <div class="col-md-3 p-2">
+                                <form action="/neftrtgs/payments/" method="POST" id="form-neftrtgs-checkout" name="form-neftrtgs-checkout">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="" id="order-no" name="order-no">
+                                    <input type="hidden" value="{{actual_weight}}" id="order-weight" name="order-weight">
+                                    <input type="hidden" value="{{shipping_charge}}" id="neftrtgs-shipping-charges" name="neftrtgs-shipping-charges">
+                                    <input type="hidden" value="{{order_value}}" id="amount-neftrtgs" name="amount-neftrtgs">
+                                    <input type="hidden" value="{{message}}" id="neftrtgs-message" name="neftrtgs-message">
+                                    <button type ="submit" id="btn-neftrtgs" class='btn btn-primary w-100'>Make payment</button>
+                                </form>
+                                <br>
+                                {% if request.user.is_superuser %}
+                                    <form action="/phonepe/request/" method="POST" id="form-phonepe-checkout" name="form-phonepe-checkout">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="" id="order-no" name="order-no">
+                                        <input type="hidden" value="{{actual_weight}}" id="order-weight" name="order-weight">
+                                        <input type="hidden" value="{{shipping_charge}}" id="phonepe-shipping-charges" name="phonepe-shipping-charges">
+                                        <input type="hidden" value="{{order_value}}" id="amount-phonepe" name="amount-phonepe">
+                                        <input type="hidden" value="{{message}}" id="phonepe-message" name="phonepe-message">
+                                        <button type ="submit" id="btn-phonepe" class='btn btn-primary w-100'>Pay by <span class="fw-bold">PhonePe</span></button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if request.user.is_superuser %}
+                            <div class="row d-flex mb-3">
+                                <span>Shipping weight = <span class="text-danger">{{actual_weight|floatformat:3}}</span> kg.</span>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <h4>Your cart is empty</h4>
+                    {% endif %}
+                </div>
+            </div>
+    </section>
+{% endblock content %}

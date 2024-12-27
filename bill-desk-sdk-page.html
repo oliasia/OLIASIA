@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+	<div class="container">
+		<div class="jumbotron mt-3">
+			<h1>BillDesk SDK</h1>
+			<a class="btn btn-lg btn-primary" href="#" onclick="callBilldeskSdk()" role="button">Launch SDK »</a>
+		</div>
+		<div id="spinner" style="display: none;" class="mt-3 text-center">
+			<div class="spinner-border" role="status" style="width: 5rem; height: 5rem;">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+		<div id="result" class="jumbotron mt-3">
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		function callBilldeskSdk(){
+			var flow_config = {
+				merchantId: "GANESHMUAT",        	
+				bdOrderId: oid,     
+				authToken: authToken,
+				childWindow: false,
+				returnUrl: "https://www.billdesk.com/web/",
+				retryCount: 3
+				//prefs: {"payment_categories": ["card", "emi"] }
+			}
+
+			var config = {
+				flowConfig: flow_config,
+				flowType: "payments"
+			}
+			window.loadBillDeskSdk(config)
+		}
+ </script>
+ {% endblock content %}

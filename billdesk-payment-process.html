@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+   <form action="{{url}}" method="post" name="billdesk">
+      <input name="msg" type="hidden" value="{{msg}}">
+   </form>
+   <script>
+      document.billdesk.submit();
+   </script>
+{% endblock content %}

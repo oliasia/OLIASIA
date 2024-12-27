@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+    {% ifequal typ "success" %}
+        <div class="alert alert-success mt-5" style="text-align: center;">
+            <div class="">&#9786;</div>
+            {{error.0}}
+            <ul style="list-style-type: none;">
+                <li>
+                    <strong>{{error.1}}</strong>
+                </li>
+                <li>
+                    <strong>Your transaction mode is {{ mode }}</strong>
+                </li>
+                <li>
+                    <strong>Your transaction reference number is {{ txnid }}</strong>
+                </li>
+                <li>
+                    <strong>Your order list contains {% for i in error.2 %} {{i}}, {% endfor %}</strong>
+                </li>
+                <li>
+                    <strong>Amount: {{amnt}}</strong>
+                </li>
+                <li><strong>Date and time of transaction: {{date}}</strong></li>
+            </ul>
+        </div>
+    {% endifequal %}
+{% endblock content %}    

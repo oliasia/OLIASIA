@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% block title %}
+        Your Order placed {{ request.META.HTTP_HOST }}
+{% endblock title %}
+{% block meta %}
+    <meta name="title" content="{{company.meta_title}}">
+    <meta name="keywords" content="{{company.meta_keywords}}">
+    <meta name="description" content="{{company.meta_description}}">
+{% endblock meta %}
+
+{% block taskbar %}
+    <div class='row-md-12 py-2 px-2' style="background: linear-gradient(to top, rgb(191, 224, 193), white, white);">
+        <a class='text-primary' href="{% url 'home' %}">Home </a>
+        <span>> Order placed</span>
+    </div>
+{% endblock taskbar %}
+
+{% block content %}
+    <section class="container-fluid">    
+        <div class="row-md-12 text-center">
+            <article>
+               <figure>
+                  <img src="{% static 'images/tick.png' %}" alt="images/oliasia.png" height="150" class="mx-auto">
+               </figure>
+            </article>
+            <h2 class="text-center mb-5">Congratulation ! Your order has been placed successfully...</h2>
+            <hr>
+        </div>
+        <div class="row-md-12">
+            <h3 class="text-center">Transection detail</h3>
+            <div class="col-md-4 mx-auto border border-info p-3 mb-3">
+               <table>
+                  <tbody>
+                     <tr>
+                        <td class="px-1 py-1 text-end">Order No. :</td>
+                        <td class="px-1 py-1 ">{{new_order_no}}</td>
+                     </tr>
+                     <tr>
+                        <td class="px-1 py-1 text-end">Payment Ref. No. :</td>
+                        <td class="px-1 py-1">{{pay_ref_no}}</td>
+                     </tr>
+                     <tr>
+                        <td class="px-1 py-1 text-end">Payment date :</td>
+                        <td class="px-1 py-1">{{order.payment_date}}</td>
+                     </tr>
+                     <tr>
+                        <td class="px-1 py-1 text-end">Amount :</td>
+                        <td class="px-1 py-1 fw-bold">₹ {{order_value|floatformat:2|intcomma}}</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+         <div class="row-md-12 text-center p-5">
+            <a type="button" href="{% url 'products' %}" class="btn btn-primary p-3">Continue Shopping...</a>
+        </div>
+      </div>
+    </section>
+{% endblock content %}
